@@ -142,6 +142,11 @@ public class ServletEventTarget implements EventTarget {
         return id;
     }
 
+    public AsyncContext getAsyncContext() {
+        return asyncContext;
+    }
+
+    
     private class AsyncListenerImpl implements AsyncListener {
         @Override
         public void onComplete(AsyncEvent event) throws IOException {
