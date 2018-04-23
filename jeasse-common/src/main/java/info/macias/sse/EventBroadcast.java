@@ -167,6 +167,10 @@ public class EventBroadcast {
                 // Client disconnected. Removing from targets
                 it.remove();
                 if (listener != null) listener.subscriberLeft(dispatcher);
+            } catch (IllegalStateException e) {
+                // Client disconnected. Removing from targets
+                it.remove();
+                if (listener != null) listener.subscriberLeft(dispatcher);
             }
         }
         String id = messageEvent.getId();
