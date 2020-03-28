@@ -3,133 +3,49 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>info.macias</groupId>
-    <version>0.11.1</version>
-	<artifactId>jeasse-servlet3</artifactId>
+    <parent>
+        <groupId>com.republicate</groupId>
+        <artifactId>jeasse</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <url>http://github.com/mariomac/jeasse</url>
+	<artifactId>jeasse-servlet3</artifactId>
+    <packaging>jar</packaging>
+
     <name>jEaSSE: Java Easy Server-Sent Events. Servlet 3.0 connector</name>
 	<description>jEaSSE connectors to Servlet 3.0</description>
-    <developers>
-        <developer>
-            <name>Mario Macias</name>
-            <url>http://macias.info</url>
-        </developer>
-    </developers>
-    <licenses>
-        <license>
-            <name>Apache license, version 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
+
     <dependencies>
 		<dependency>
-			<groupId>info.macias</groupId>
+			<groupId>com.republicate</groupId>
 			<artifactId>jeasse-common</artifactId>
-            <version>0.11.1</version>
+            <version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
+			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
             </plugin>
-
         </plugins>
     </build>
-    <scm>
-        <connection>scm:git:git@github.com:mariomac/jeasse.git</connection>
-        <developerConnection>scm:git:git@github.com:mariomac/jeasse.git</developerConnection>
-        <url>git@github.com:mariomac/jeasse.git</url>
-    </scm>
-    <profiles>
-        <profile>
-            <id>deployment</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

@@ -31,7 +31,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
  *
  * @author <a href="http://github.com/mariomac">Mario Macías</a>
  */
-public class EventBroadcast {
+public class EventBroadcast extends Broadcast
+{
 
     protected Queue<EventTarget> targets = new ConcurrentLinkedQueue<>();
     private static final int MAX_HISTORY_SIZE = 10;
@@ -125,28 +126,19 @@ public class EventBroadcast {
 	}
 
 	/**
+	 * Get total count of subscribers. Actual number of active subscribers may be less that this.
+	 * @return the size of the Set holding the subscribers
+	 */
+	public int size() {
+		return targets.size();
+	}
+
+	/**
 	 * Returns true if subscriber count is greater than zero
 	 * @return true if subscriber count is greater than zero
 	 */
 	public boolean hasSubscribers() {
 		return getSubscriberCount() > 0;
-	}
-
-	/**
-	 * <p>Broadcasts a {@link MessageEvent} to all the subscribers, containing only 'event' and 'data' fields.</p>
-	 *
-	 * <p>This method relies on the {@link EventTarget#send(MessageEvent)} method. If this method throws an
-	 * {@link IOException}, the broadcaster assumes the subscriber went offline and silently detaches it
-	 * from the collection of subscribers.</p>
-	 *
-	 * @param event The descriptor of the 'event' field.
-	 * @param data The content of the 'data' field.
-	 */
-	public void broadcast(String event, String data) {
-		broadcast(new MessageEvent.Builder()
-				.setEvent(event)
-				.setData(data)
-				.build());
 	}
 
 	/**
@@ -158,16 +150,24 @@ public class EventBroadcast {
 	 *
 	 * @param messageEvent The instance that encapsulates all the desired fields for the {@link MessageEvent}
 	 */
-	public void broadcast(MessageEvent messageEvent) {
+	public boolean broadcast(MessageEvent messageEvent)
+	{
+		boolean hasLiveDispatchers = false;
         for (Iterator<EventTarget> it = targets.iterator(); it.hasNext(); ) {
             EventTarget dispatcher = it.next();
-            try {
+            try
+			{
                 dispatcher.send(messageEvent);
-            } catch (IOException e) {
+                hasLiveDispatchers = true;
+            }
+            catch (IOException e)
+			{
                 // Client disconnected. Removing from targets
                 it.remove();
                 if (listener != null) listener.subscriberLeft(dispatcher);
-            } catch (IllegalStateException e) {
+            }
+            catch (IllegalStateException e)
+			{
                 // Client disconnected. Removing from targets
                 it.remove();
                 if (listener != null) listener.subscriberLeft(dispatcher);
@@ -175,9 +175,10 @@ public class EventBroadcast {
         }
         String id = messageEvent.getId();
         if (id != null) {
-            history.put(id, messageEvent);
-            while (history.size() > MAX_HISTORY_SIZE) history.remove(history.firstKey());
-        }
+		history.put(id, messageEvent);
+		while (history.size() > MAX_HISTORY_SIZE) history.remove(history.firstKey());
+	}
+	return hasLiveDispatchers;
     }
 
 	/**

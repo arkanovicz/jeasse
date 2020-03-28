@@ -89,12 +89,12 @@ public class LastEventIdTest {
 
         // send event #1
         eventBroadcast.broadcast(new MessageEvent.Builder().setEvent("test").setData("foo").setId("1").build());
-        assertTrue(eventTarget.lastEventId.equals("1"));
+        assertEquals("1", eventTarget.lastEventId);
 
         // fail to send event #2
         eventTarget.willThrow = true;
         eventBroadcast.broadcast(new MessageEvent.Builder().setEvent("test").setData("foo").setId("2").build());
-        assertTrue(eventTarget.lastEventId.equals("1"));
+        assertEquals("1", eventTarget.lastEventId);
 
         // send event #3
         eventBroadcast.broadcast(new MessageEvent.Builder().setEvent("test").setData("foo").setId("3").build());
@@ -104,6 +104,6 @@ public class LastEventIdTest {
         eventBroadcast.addSubscriber(eventTarget, "1");
 
         // then check events #2 and #3 have been sent again
-        assertTrue(eventTarget.lastEventId.equals("3"));
+        assertEquals("3", eventTarget.lastEventId);
     }
 }

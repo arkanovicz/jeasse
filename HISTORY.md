@@ -1,5 +1,7 @@
 # History of releases
 
+## 1.0-SNAPSHOT (arkanovicz's fork)
+
 ## 0.11.1
 
 - Improved multithread performance of event-broadcaster by using ConcurrentLinkedQueue.

@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>info.macias</groupId>
+        <groupId>com.republicate</groupId>
         <artifactId>jeasse-examples</artifactId>
-        <version>0.11.1</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>jeasse-chat-servlet3</artifactId>
     <packaging>jar</packaging>
@@ -15,6 +15,7 @@
 
     <properties>
         <jar.file>chat-servlet3</jar.file>
+        <jetty.version>9.3.6.v20151106</jetty.version>
     </properties>
 
     <licenses>
@@ -26,50 +27,30 @@
 
     <dependencies>
         <dependency>
-            <groupId>info.macias</groupId>
+            <groupId>com.republicate</groupId>
             <artifactId>jeasse-servlet3</artifactId>
-            <version>0.11.1</version>
-        </dependency>
-        <dependency>
-            <groupId>info.macias</groupId>
-            <artifactId>jeasse-common</artifactId>
-            <version>0.11.1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.3.6.v20151106</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.3.6.v20151106</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>${junit.version}</version>
         </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -106,8 +87,12 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+cd
         </plugins>
     </build>
-
 
 </project>
