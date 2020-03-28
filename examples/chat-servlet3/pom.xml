@@ -91,7 +91,6 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
             </plugin>
-cd
         </plugins>
     </build>
 
