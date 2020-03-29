@@ -33,11 +33,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class EventBroadcast extends Broadcast
 {
-
     protected Queue<EventTarget> targets = new ConcurrentLinkedQueue<>();
     private static final int MAX_HISTORY_SIZE = 10;
     protected SortedMap<String, MessageEvent> history = new ConcurrentSkipListMap(); // messages per id
-    protected EventTargetListener listener = null;
 
 	/**
 	 * <p>Adds a subscriber from a <code>connectionRequest</code> that contains the information to allow sending back
@@ -48,9 +46,8 @@ public class EventBroadcast extends Broadcast
 	 *
 	 * @throws IOException if there was an error during the acknowledge process between broadcaster and subscriber
 	 */
-	public void addSubscriber(EventTarget eventTarget) throws IOException {
-        targets.add(eventTarget.ok().open());
-        if (listener != null) listener.subscriberJoined(eventTarget);
+	public final void addSubscriber(EventTarget eventTarget) throws IOException {
+		addSubscriber(eventTarget, null, null);
     }
     
 	/**
@@ -65,9 +62,8 @@ public class EventBroadcast extends Broadcast
 	 * @throws IOException if there was an error during the acknowledge process between broadcaster and subscriber, or
 	 *         if the subscriber immediately closed the connection before receiving the welcome message
 	 */
-	public void addSubscriber(EventTarget eventTarget, MessageEvent welcomeMessage) throws IOException {
-        targets.add(eventTarget.ok().open().send(welcomeMessage));
-        if (listener != null) listener.subscriberJoined(eventTarget);
+	public final void addSubscriber(EventTarget eventTarget, MessageEvent welcomeMessage) throws IOException {
+		addSubscriber(eventTarget, welcomeMessage, null);
     }
 
 	/**
@@ -80,22 +76,32 @@ public class EventBroadcast extends Broadcast
      * @param lastEventId last received event id
 	 * @throws IOException if there was an error during the acknowledge process between broadcaster and subscriber
 	 */
-	public void addSubscriber(EventTarget eventTarget, String lastEventId) throws IOException {
-        addSubscriber(eventTarget);
-        lastEventId = padLastEventId(lastEventId);
-        if (lastEventId != null && lastEventId.length() > 0) {
-            synchronized (history) { // to avoid sending twice a new event
-                SortedMap<String, MessageEvent> missedEvents = history.tailMap(lastEventId);
-                Iterator<Map.Entry<String, MessageEvent>> it = missedEvents.entrySet().iterator();
-                if (it.hasNext()) {
-                    // skip first event if it's the same
-                    Map.Entry<String, MessageEvent> entry = it.next();
-                    if (entry.getKey().equals(lastEventId)) entry = it.next();
-                    while (it.hasNext()) eventTarget.send(it.next().getValue());
-                }
-            }
-        }
+	public final void addSubscriber(EventTarget eventTarget, String lastEventId) throws IOException {
+		addSubscriber(eventTarget, null, lastEventId);
     }
+
+	public void addSubscriber(EventTarget eventTarget, MessageEvent welcomeMessage, String lastEventId) throws IOException {
+		targets.add(eventTarget);
+		eventTarget.ok().open();
+		if (welcomeMessage != null) eventTarget.send(welcomeMessage);
+		if (lastEventId != null)
+		{
+			lastEventId = padLastEventId(lastEventId);
+			if (lastEventId != null && lastEventId.length() > 0) {
+				synchronized (history) { // to avoid sending twice a new event
+					SortedMap<String, MessageEvent> missedEvents = history.tailMap(lastEventId);
+					Iterator<Map.Entry<String, MessageEvent>> it = missedEvents.entrySet().iterator();
+					if (it.hasNext()) {
+						// skip first event if it's the same
+						Map.Entry<String, MessageEvent> entry = it.next();
+						if (entry.getKey().equals(lastEventId)) entry = it.next();
+						while (it.hasNext()) eventTarget.send(it.next().getValue());
+					}
+				}
+			}
+		}
+		subscriberJoined(eventTarget);
+	}
 
     /**
      * Utility method to left-pad last-event-id with zeros when it's a numeric id
@@ -160,17 +166,11 @@ public class EventBroadcast extends Broadcast
                 dispatcher.send(messageEvent);
                 hasLiveDispatchers = true;
             }
-            catch (IOException e)
+            catch (IOException|IllegalStateException e)
 			{
                 // Client disconnected. Removing from targets
                 it.remove();
-                if (listener != null) listener.subscriberLeft(dispatcher);
-            }
-            catch (IllegalStateException e)
-			{
-                // Client disconnected. Removing from targets
-                it.remove();
-                if (listener != null) listener.subscriberLeft(dispatcher);
+                subscriberLeft(dispatcher);
             }
         }
         String id = messageEvent.getId();
@@ -197,22 +197,17 @@ public class EventBroadcast extends Broadcast
         history.clear();
     }
 
-    /**
-     * Set an EventTargetListener
-     *
-     * @param listener The new listener
-     */
-    public void setSubscribersListener(EventTargetListener listener) {
-        this.listener = listener;
-    }
+	public void remove(String targetId)
+	{
+		for (Iterator<EventTarget> it = targets.iterator(); it.hasNext(); )
+		{
+			EventTarget dispatcher = it.next();
+			if (targetId.equals(dispatcher.getID()))
+			{
+				targets.remove(targetId);
+				break;
+			}
+		}
+	}
 
-    /**
-     * Removes the EventTargetListener
-     */
-    public void removeSubscribersListener() {
-        listener = null;
-    }
-    
-       
 }
-

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ConcurrencyTest {
     private static final int CONCURRENT_THREADS = 100;
@@ -45,7 +46,7 @@ public class ConcurrencyTest {
     /**
      * Event target that closes after receiving a given number of events
      */
-    private class AutoDisconnectingEventTarget implements EventTarget {
+    private static class AutoDisconnectingEventTarget implements EventTarget {
         int receivedEvents = 0;
         int exceptions = 0;
         final int eventsBeforeClosing;

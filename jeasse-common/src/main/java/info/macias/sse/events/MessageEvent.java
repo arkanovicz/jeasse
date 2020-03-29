@@ -16,6 +16,8 @@ limitations under the License.
 
 package info.macias.sse.events;
 
+import java.io.Serializable;
+
 /**
  * This class encapsulates a SSE Message Event. It may specify the next optional fields:
  *
@@ -28,7 +30,8 @@ package info.macias.sse.events;
  * </ul>
  * @author <a href="http://github.com/mariomac">Mario Macías</a>
  */
-public class MessageEvent {
+public class MessageEvent implements Serializable
+{
     private final String data;
     private final String event;
     private final Integer retry;

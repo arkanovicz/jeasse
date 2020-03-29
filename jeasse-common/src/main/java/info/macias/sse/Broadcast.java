@@ -4,10 +4,11 @@ import com.republicate.json.Json;
 import info.macias.sse.events.MessageEvent;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class Broadcast
+public abstract class Broadcast implements Serializable
 {
     private Map<String, Json.Object> context = new ConcurrentHashMap<>();
 
@@ -37,4 +38,8 @@ public abstract class Broadcast
     {
         return size() == 0;
     }
+
+    public void subscriberJoined(EventTarget target) {}
+
+    public void subscriberLeft(EventTarget target) {}
 }

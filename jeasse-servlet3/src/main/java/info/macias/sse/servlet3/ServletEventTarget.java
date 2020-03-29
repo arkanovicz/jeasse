@@ -32,9 +32,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author <a href="http://github.com/mariomac">Mario Macías</a>
  */
-public class ServletEventTarget implements EventTarget {
+public class ServletEventTarget implements EventTarget
+{
 
-	private final AsyncContext asyncContext;
+	private final transient AsyncContext asyncContext;
     private String id = null;
     private static AtomicInteger nextID = new AtomicInteger();
 

@@ -76,7 +76,7 @@ public interface EventTarget {
      */
     default String getID()
     {
-        return null;
+        return "";
     }
 
 }
