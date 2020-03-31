@@ -19,13 +19,15 @@ package info.macias.sse;
 import info.macias.sse.events.MessageEvent;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * SSE dispatcher for one-to-one connections from Server to client-side subscriber
  *
  * @author <a href="http://github.com/mariomac">Mario Macías</a>
  */
-public interface EventTarget {
+public interface EventTarget extends Serializable
+{
 
 	/**
 	 * If the connection is accepted, the server sends the 200 (OK) status message, plus the next HTTP headers:
