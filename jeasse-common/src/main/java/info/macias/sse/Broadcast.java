@@ -10,8 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Broadcast implements Serializable
 {
-    private Map<String, Json.Object> context = new ConcurrentHashMap<>();
-
     /**
      * <p>Broadcasts a {@link MessageEvent} to all the subscribers, containing only 'event' and 'data' fields.</p>
      *
