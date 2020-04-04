@@ -17,6 +17,8 @@ limitations under the License.
 package info.macias.sse;
 
 import info.macias.sse.events.MessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
  */
 public class EventBroadcast extends Broadcast
 {
+	protected static Logger logger = LoggerFactory.getLogger("sse");
     protected Queue<EventTarget> targets = new ConcurrentLinkedQueue<>();
     private static final int MAX_HISTORY_SIZE = 10;
     protected SortedMap<String, MessageEvent> history = new ConcurrentSkipListMap(); // messages per id
@@ -96,7 +99,12 @@ public class EventBroadcast extends Broadcast
 						// skip first event if it's the same
 						Map.Entry<String, MessageEvent> entry = it.next();
 						if (entry.getKey().equals(lastEventId)) entry = it.next();
-						while (it.hasNext()) eventTarget.send(it.next().getValue());
+						while (it.hasNext())
+						{
+							MessageEvent msg = it.next().getValue();
+							logger.trace(">> (@{}) /history/ {}: {}", eventTarget.getID(), msg.getEvent(), msg.getData());
+							eventTarget.send(msg);
+						}
 					}
 				}
 			}

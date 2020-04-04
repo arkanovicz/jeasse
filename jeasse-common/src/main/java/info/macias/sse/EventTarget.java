@@ -68,6 +68,8 @@ public interface EventTarget extends Serializable
 	 */
 	EventTarget send(MessageEvent messageEvent) throws IOException;
 
+	String getLastMessageId();
+
 	/**
 	 * Closes the connection between the server and the client.
 	 */

@@ -40,6 +40,7 @@ public class ServletEventTarget implements EventTarget
 
 	private final transient AsyncContext asyncContext;
     private String id = null;
+    private String lastMessageId = null;
     private static AtomicInteger nextID = new AtomicInteger();
 
     /**
@@ -99,6 +100,7 @@ public class ServletEventTarget implements EventTarget
      */
 	@Override
     public ServletEventTarget send(String event, String data) throws IOException {
+        logger.warn("[{}] message without id: {}: {}", id, event, data);
         HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
         response.getOutputStream().write(
                 new MessageEvent.Builder()
@@ -124,6 +126,11 @@ public class ServletEventTarget implements EventTarget
 		HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
         response.getOutputStream().write(messageEvent.toString().getBytes("UTF-8"));
 		response.getOutputStream().flush();
+		lastMessageId = messageEvent.getId();
+		if (lastMessageId == null)
+        {
+            logger.warn("[{}] message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
+        }
         return this;
     }
 
@@ -146,6 +153,12 @@ public class ServletEventTarget implements EventTarget
         return id;
     }
 
+    @Override
+    public String getLastMessageId()
+    {
+        return lastMessageId;
+    }
+
     public AsyncContext getAsyncContext() {
         return asyncContext;
     }
@@ -165,7 +178,7 @@ public class ServletEventTarget implements EventTarget
 
         @Override
         public void onError(AsyncEvent event) throws IOException {
-            logger.trace("[{}] event error", id, event.getThrowable());
+            logger.trace("[{}] event error: {}", id, event.getThrowable().getMessage());
         }
 
         @Override
