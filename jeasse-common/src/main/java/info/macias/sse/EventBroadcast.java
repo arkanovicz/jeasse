@@ -174,8 +174,8 @@ public class EventBroadcast extends Broadcast
             }
         }
         String id = messageEvent.getId();
-        if (id != null) {
-		history.put(id, messageEvent);
+        if (id != null && !history.containsKey(id)) {
+			history.put(id, messageEvent);
 		while (history.size() > MAX_HISTORY_SIZE) history.remove(history.firstKey());
 	}
 	return hasLiveDispatchers;
