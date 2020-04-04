@@ -30,6 +30,8 @@ public abstract class Broadcast implements Serializable
 
     protected abstract boolean broadcast(MessageEvent event);
 
+    public abstract void keepAlive();
+
     public abstract int size();
 
     public boolean isEmpty()

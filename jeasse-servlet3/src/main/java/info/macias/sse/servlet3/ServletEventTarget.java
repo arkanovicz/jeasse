@@ -142,6 +142,14 @@ public class ServletEventTarget implements EventTarget
         return this;
     }
 
+    @Override
+    public void keepAlive() throws IOException
+    {
+        HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
+        response.getOutputStream().write(";\n\n".getBytes("UTF-8"));
+        response.getOutputStream().flush();
+    }
+
     private boolean completed = false;
 
     /**
@@ -164,8 +172,8 @@ public class ServletEventTarget implements EventTarget
     public AsyncContext getAsyncContext() {
         return asyncContext;
     }
-
     private class AsyncListenerImpl implements AsyncListener {
+
         @Override
         public void onComplete(AsyncEvent event) throws IOException {
             completed = true;
@@ -181,10 +189,10 @@ public class ServletEventTarget implements EventTarget
         public void onError(AsyncEvent event) throws IOException {
             logger.trace("[{}] event error: {}", id, event.getThrowable().getMessage());
         }
-
         @Override
         public void onStartAsync(AsyncEvent event) throws IOException {
             logger.trace("[{}] event start", id);
         }
+
     }
 }

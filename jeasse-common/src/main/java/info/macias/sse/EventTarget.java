@@ -81,4 +81,5 @@ public interface EventTarget extends Serializable
         return "";
     }
 
+    void keepAlive() throws IOException;
 }

@@ -191,6 +191,27 @@ public class EventBroadcast extends Broadcast
 	return hasLiveDispatchers;
     }
 
+    @Override
+	public void keepAlive()
+	{
+		boolean hasLiveDispatchers = false;
+		for (Iterator<EventTarget> it = targets.iterator(); it.hasNext(); ) {
+			EventTarget dispatcher = it.next();
+			try
+			{
+				dispatcher.keepAlive();
+				hasLiveDispatchers = true;
+			}
+			catch (IOException|IllegalStateException e)
+			{
+				// Client disconnected. Removing from targets
+				it.remove();
+				subscriberLeft(dispatcher);
+			}
+		}
+	}
+
+
 	/**
 	 * Closes all the connections between the broadcaster and the subscribers, and detaches all of them from the
 	 * collection of subscribers.
