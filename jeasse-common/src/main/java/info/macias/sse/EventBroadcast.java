@@ -85,7 +85,6 @@ public class EventBroadcast extends Broadcast
     }
 
 	public void addSubscriber(EventTarget eventTarget, MessageEvent welcomeMessage, String lastEventId) throws IOException {
-		targets.add(eventTarget);
 		eventTarget.ok().open();
 		if (welcomeMessage != null) eventTarget.send(welcomeMessage);
 		if (lastEventId != null)
@@ -109,7 +108,9 @@ public class EventBroadcast extends Broadcast
 				}
 			}
 		}
+		// wait for history to have been sent AND subclasses to have sent context before adding event target to known targets
 		subscriberJoined(eventTarget);
+		targets.add(eventTarget);
 	}
 
     /**

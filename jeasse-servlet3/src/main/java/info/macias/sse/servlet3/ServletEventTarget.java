@@ -40,7 +40,7 @@ public class ServletEventTarget implements EventTarget
 
 	private final transient AsyncContext asyncContext;
     private String id = null;
-    private String lastMessageId = null;
+    private String lastSentMessageId = null;
     private static AtomicInteger nextID = new AtomicInteger();
 
     /**
@@ -124,12 +124,20 @@ public class ServletEventTarget implements EventTarget
 	@Override
     public ServletEventTarget send(MessageEvent messageEvent) throws IOException {
 		HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
-        response.getOutputStream().write(messageEvent.toString().getBytes("UTF-8"));
-		response.getOutputStream().flush();
-		lastMessageId = messageEvent.getId();
-		if (lastMessageId == null)
+		String messageId = messageEvent.getId();
+		if (messageEvent == null)
         {
             logger.warn("[{}] message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
+        }
+		else if (lastSentMessageId != null && messageId.compareTo(lastSentMessageId) <= 0)
+        {
+            logger.warn("[{}] ignoring message #{} (<= last sent #{}) for message {}: {}", id, messageId, lastSentMessageId, messageEvent.getEvent(), messageEvent.getData());
+        }
+		else
+        {
+            response.getOutputStream().write(messageEvent.toString().getBytes("UTF-8"));
+            response.getOutputStream().flush();
+            lastSentMessageId = messageId;
         }
         return this;
     }
@@ -153,17 +161,10 @@ public class ServletEventTarget implements EventTarget
         return id;
     }
 
-    @Override
-    public String getLastMessageId()
-    {
-        return lastMessageId;
-    }
-
     public AsyncContext getAsyncContext() {
         return asyncContext;
     }
 
-    
     private class AsyncListenerImpl implements AsyncListener {
         @Override
         public void onComplete(AsyncEvent event) throws IOException {
