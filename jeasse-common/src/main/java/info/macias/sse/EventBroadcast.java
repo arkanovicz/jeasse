@@ -38,7 +38,7 @@ public class EventBroadcast extends Broadcast
 {
 	protected static Logger logger = LoggerFactory.getLogger("sse");
     protected Queue<EventTarget> targets = new ConcurrentLinkedQueue<>();
-    private static final int MAX_HISTORY_SIZE = 10;
+    private static final int MAX_HISTORY_SIZE = 20;
     protected SortedMap<String, MessageEvent> history = new ConcurrentSkipListMap(); // messages per id
 
 	/**
@@ -184,10 +184,14 @@ public class EventBroadcast extends Broadcast
             }
         }
         String id = messageEvent.getId();
-        if (id != null && !history.containsKey(id)) {
-			history.put(id, messageEvent);
-		while (history.size() > MAX_HISTORY_SIZE) history.remove(history.firstKey());
-	}
+        if (id != null)
+		{
+			id = padLastEventId(id);
+			if (!history.containsKey(id)) {
+				history.put(id, messageEvent);
+				while (history.size() > MAX_HISTORY_SIZE) history.remove(history.firstKey());
+			}
+		}
 	return hasLiveDispatchers;
     }
 
