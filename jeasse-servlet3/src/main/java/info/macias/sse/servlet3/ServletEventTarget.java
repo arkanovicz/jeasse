@@ -18,6 +18,8 @@ package info.macias.sse.servlet3;
 
 import info.macias.sse.EventTarget;
 import info.macias.sse.events.MessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -34,6 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ServletEventTarget implements EventTarget
 {
+    protected static Logger logger = LoggerFactory.getLogger("sse");
 
 	private final transient AsyncContext asyncContext;
     private String id = null;
@@ -152,18 +155,22 @@ public class ServletEventTarget implements EventTarget
         @Override
         public void onComplete(AsyncEvent event) throws IOException {
             completed = true;
+            logger.trace("[{}] event complete", id);
         }
 
         @Override
         public void onTimeout(AsyncEvent event) throws IOException {
+            logger.trace("[{}] event timeout", id);
         }
 
         @Override
         public void onError(AsyncEvent event) throws IOException {
+            logger.trace("[{}] event error", id, event.getThrowable());
         }
 
         @Override
         public void onStartAsync(AsyncEvent event) throws IOException {
+            logger.trace("[{}] event start", id);
         }
     }
 }
