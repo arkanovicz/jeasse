@@ -100,7 +100,7 @@ public class ServletEventTarget implements EventTarget
      */
 	@Override
     public ServletEventTarget send(String event, String data) throws IOException {
-        logger.warn("[{}] message without id: {}: {}", id, event, data);
+        logger.warn("#{} message without id: {}: {}", id, event, data);
         HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
         response.getOutputStream().write(
                 new MessageEvent.Builder()
@@ -127,11 +127,11 @@ public class ServletEventTarget implements EventTarget
 		String messageId = messageEvent.getId();
 		if (messageEvent == null)
         {
-            logger.warn("[{}] message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
+            logger.warn("#{} message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
         }
 		else if (lastSentMessageId != null && messageId.compareTo(lastSentMessageId) <= 0)
         {
-            logger.warn("[{}] ignoring message #{} (<= last sent #{}) for message {}: {}", id, messageId, lastSentMessageId, messageEvent.getEvent(), messageEvent.getData());
+            logger.warn("#{} ~{} ignored (last sent ~{}): {}: {}", id, messageId, lastSentMessageId, messageEvent.getEvent(), messageEvent.getData());
         }
 		else
         {
@@ -177,21 +177,21 @@ public class ServletEventTarget implements EventTarget
         @Override
         public void onComplete(AsyncEvent event) throws IOException {
             completed = true;
-            logger.trace("[{}] event complete", id);
+            // logger.trace("#{} event complete", id);
         }
 
         @Override
         public void onTimeout(AsyncEvent event) throws IOException {
-            logger.trace("[{}] event timeout", id);
+            // logger.trace("[{}] event timeout", id);
         }
 
         @Override
         public void onError(AsyncEvent event) throws IOException {
-            logger.trace("[{}] event error: {}", id, event.getThrowable().getMessage());
+            // logger.trace("[{}] event error: {}", id, event.getThrowable().getMessage());
         }
         @Override
         public void onStartAsync(AsyncEvent event) throws IOException {
-            logger.trace("[{}] event start", id);
+            // logger.trace("[{}] event start", id);
         }
 
     }

@@ -101,7 +101,7 @@ public class EventBroadcast extends Broadcast
 						while (it.hasNext())
 						{
 							MessageEvent msg = it.next().getValue();
-							logger.trace(">> (@{}) /history/ {}: {}", eventTarget.getID(), msg.getEvent(), msg.getData());
+							logger.trace(">> #{}/history {}~{}: {}", eventTarget.getID(), msg.getId(), msg.getEvent(), msg.getData());
 							eventTarget.send(msg);
 						}
 					}
