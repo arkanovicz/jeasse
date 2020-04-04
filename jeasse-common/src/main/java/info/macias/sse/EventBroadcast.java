@@ -94,15 +94,27 @@ public class EventBroadcast extends Broadcast
 				synchronized (history) { // to avoid sending twice a new event
 					SortedMap<String, MessageEvent> missedEvents = history.tailMap(lastEventId);
 					Iterator<Map.Entry<String, MessageEvent>> it = missedEvents.entrySet().iterator();
-					if (it.hasNext()) {
+					if (it.hasNext())
+					{
 						// skip first event if it's the same
+						// (quite complex code thereafter to avoid adding an additional branching in the loop...)
 						Map.Entry<String, MessageEvent> entry = it.next();
-						if (entry.getKey().equals(lastEventId)) entry = it.next();
-						while (it.hasNext())
+						if (entry.getKey().equals(lastEventId))
 						{
-							MessageEvent msg = it.next().getValue();
-							logger.trace(">> #{}/history {}~{}: {}", eventTarget.getID(), msg.getId(), msg.getEvent(), msg.getData());
-							eventTarget.send(msg);
+							if (it.hasNext()) entry = it.next();
+							else entry = null;
+						}
+						if (entry != null)
+						{
+							do
+							{
+								MessageEvent msg = entry.getValue();
+								logger.trace(">> #{}/history {}~{}: {}", eventTarget.getID(), msg.getId(), msg.getEvent(), msg.getData());
+								eventTarget.send(msg);
+								if (!it.hasNext()) break;
+								entry = it.next();
+							}
+							while (true);
 						}
 					}
 				}
