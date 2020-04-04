@@ -25,6 +25,7 @@ import java.util.SortedMap;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.stream.Collectors;
 
 /**
  * This class implements a one-to-many connection for broadcasting messages across multiple subscribers.
@@ -208,6 +209,16 @@ public class EventBroadcast extends Broadcast
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Debugging: the toString() returns the list of event targets ids
+	 * @return
+	 */
+	@Override
+	public String toString()
+	{
+		return targets.stream().map(eventTarget -> eventTarget.getID()).collect(Collectors.joining(":"));
 	}
 
 }
