@@ -16,6 +16,7 @@ limitations under the License.
 
 package info.macias.sse.servlet3;
 
+import info.macias.sse.EventBroadcast;
 import info.macias.sse.EventTarget;
 import info.macias.sse.events.MessageEvent;
 import org.slf4j.Logger;
@@ -129,7 +130,7 @@ public class ServletEventTarget implements EventTarget
         {
             logger.warn("#{} message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
         }
-		else if (lastSentMessageId != null && messageId.compareTo(lastSentMessageId) <= 0)
+		else if (lastSentMessageId != null && EventBroadcast.padLastEventId(messageId).compareTo(EventBroadcast.padLastEventId(lastSentMessageId)) <= 0)
         {
             logger.warn("#{} ~{} ignored (last sent ~{}): {}: {}", id, messageId, lastSentMessageId, messageEvent.getEvent(), messageEvent.getData());
         }

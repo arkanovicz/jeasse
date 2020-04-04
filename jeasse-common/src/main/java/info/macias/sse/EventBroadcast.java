@@ -116,7 +116,7 @@ public class EventBroadcast extends Broadcast
     /**
      * Utility method to left-pad last-event-id with zeros when it's a numeric id
      */
-    private static String padLastEventId(String lastEventId) {
+    public static String padLastEventId(String lastEventId) {
         boolean isNumericId = false;
         int numericId = 0;
         if (lastEventId != null && lastEventId.length() > 0) {
