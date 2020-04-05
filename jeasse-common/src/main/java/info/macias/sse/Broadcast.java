@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Broadcast implements Serializable
 {
+    private static final long serialVersionUID = -1569302669699160751L;
+
     /**
      * <p>Broadcasts a {@link MessageEvent} to all the subscribers, containing only 'event' and 'data' fields.</p>
      *

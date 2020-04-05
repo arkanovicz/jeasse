@@ -37,6 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ServletEventTarget implements EventTarget
 {
+    private static final long serialVersionUID = -7023267185323329595L;
+
     protected static Logger logger = LoggerFactory.getLogger("sse");
 
 	private final transient AsyncContext asyncContext;

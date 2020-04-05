@@ -32,12 +32,16 @@ import java.io.Serializable;
  */
 public class MessageEvent implements Serializable
 {
+    private static final long serialVersionUID = 6523317842188487107L;
+
     private final String data;
     private final String event;
     private final Integer retry;
     private final String id;
 
     private final String toStringCache;
+
+
 
     private MessageEvent(String event, String data, Integer retry, String id, String toStringCache) {
         this.data = data;
