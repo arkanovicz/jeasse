@@ -126,7 +126,7 @@ public class ServletEventTarget implements EventTarget
     public ServletEventTarget send(MessageEvent messageEvent) throws IOException {
 		HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
 		String messageId = messageEvent.getId();
-		if (messageEvent == null)
+		if (messageId == null)
         {
             logger.warn("#{} message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
         }
