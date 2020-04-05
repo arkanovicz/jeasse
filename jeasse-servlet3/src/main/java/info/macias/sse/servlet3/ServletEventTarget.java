@@ -43,7 +43,6 @@ public class ServletEventTarget implements EventTarget
 
 	private final transient AsyncContext asyncContext;
     private String id = null;
-    private String lastSentMessageId = null;
     private static AtomicInteger nextID = new AtomicInteger();
 
     /**
@@ -132,15 +131,10 @@ public class ServletEventTarget implements EventTarget
         {
             logger.warn("#{} message without id: {}: {}", id, messageEvent.getEvent(), messageEvent.getData());
         }
-		else if (lastSentMessageId != null && EventBroadcast.padLastEventId(messageId).compareTo(EventBroadcast.padLastEventId(lastSentMessageId)) <= 0)
-        {
-            logger.warn("#{} ~{} ignored (last sent ~{}): {}: {}", id, messageId, lastSentMessageId, messageEvent.getEvent(), messageEvent.getData());
-        }
 		else
         {
             response.getOutputStream().write(messageEvent.toString().getBytes("UTF-8"));
             response.getOutputStream().flush();
-            lastSentMessageId = messageId;
         }
         return this;
     }
