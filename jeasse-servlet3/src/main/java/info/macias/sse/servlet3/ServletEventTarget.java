@@ -143,7 +143,7 @@ public class ServletEventTarget implements EventTarget
     public void keepAlive() throws IOException
     {
         HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
-        response.getOutputStream().write(";\n\n".getBytes("UTF-8"));
+        response.getOutputStream().write(":\n\n".getBytes("UTF-8"));
         response.getOutputStream().flush();
     }
 
