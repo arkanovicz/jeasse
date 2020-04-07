@@ -41,7 +41,7 @@ public class ServletEventTarget implements EventTarget
 
     protected static Logger logger = LoggerFactory.getLogger("sse");
 
-	private final transient AsyncContext asyncContext;
+	private final AsyncContext asyncContext;
     private String id = null;
     private static AtomicInteger nextID = new AtomicInteger();
 

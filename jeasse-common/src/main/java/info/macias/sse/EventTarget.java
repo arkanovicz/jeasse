@@ -26,7 +26,7 @@ import java.io.Serializable;
  *
  * @author <a href="http://github.com/mariomac">Mario Macías</a>
  */
-public interface EventTarget extends Serializable
+public interface EventTarget
 {
 
 	/**
