@@ -45,6 +45,8 @@ public class ServletEventTarget implements EventTarget
     private String id = null;
     private static AtomicInteger nextID = new AtomicInteger();
 
+    private String lastMessageId = "";
+
     /**
      * Builds a new dispatcher from an {@link HttpServletRequest} object.
      * @param request The {@link HttpServletRequest} reference, as sent by the subscriber.
@@ -133,9 +135,10 @@ public class ServletEventTarget implements EventTarget
         }
 		else
         {
-            response.getOutputStream().write(messageEvent.toString().getBytes("UTF-8"));
-            response.getOutputStream().flush();
+            this.lastMessageId = messageId;
         }
+        response.getOutputStream().write(messageEvent.toString().getBytes("UTF-8"));
+        response.getOutputStream().flush();
         return this;
     }
 
@@ -143,8 +146,23 @@ public class ServletEventTarget implements EventTarget
     public void keepAlive() throws IOException
     {
         HttpServletResponse response = (HttpServletResponse)asyncContext.getResponse();
+
+        /* keep-alive using comments */
         response.getOutputStream().write(":\n\n".getBytes("UTF-8"));
         response.getOutputStream().flush();
+
+        /* keep-alive using message */
+//        response.getOutputStream().write(
+//            new MessageEvent.Builder()
+//                .setData("")
+//                .setEvent("noop")
+//                .setId(lastMessageId)
+//                .build()
+//                .toString()
+//                .getBytes("UTF-8")
+//        );
+//        response.getOutputStream().flush();
+
     }
 
     private boolean completed = false;
