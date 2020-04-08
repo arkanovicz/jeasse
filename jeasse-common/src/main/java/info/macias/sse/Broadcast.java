@@ -30,7 +30,7 @@ public abstract class Broadcast implements Serializable
             .build());
     }
 
-    protected abstract boolean broadcast(MessageEvent event);
+    public abstract boolean broadcast(MessageEvent event);
 
     public abstract void keepAlive();
 
