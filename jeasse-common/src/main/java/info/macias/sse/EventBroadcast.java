@@ -195,10 +195,9 @@ public class EventBroadcast extends Broadcast
                 subscriberLeft(dispatcher);
             }
         }
-        String id = messageEvent.getId();
-        if (id != null)
+        if (messageEvent.getId() != null && !messageEvent.isVolatile())
 		{
-			id = padLastEventId(id);
+			String id = padLastEventId(messageEvent.getId());
 			if (!history.containsKey(id)) {
 				history.put(id, messageEvent);
 				while (history.size() > MAX_HISTORY_SIZE) history.remove(history.firstKey());

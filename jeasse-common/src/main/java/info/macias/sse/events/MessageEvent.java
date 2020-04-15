@@ -40,10 +40,10 @@ public class MessageEvent implements Serializable
     private final String id;
 
     private final String toStringCache;
+    private boolean volatileEvent;
 
 
-
-    private MessageEvent(String event, String data, Integer retry, String id, String toStringCache) {
+    private MessageEvent(String event, String data, Integer retry, String id, String toStringCache, boolean volatileEvent) {
         this.data = data;
         this.event = event;
         this.toStringCache = toStringCache;
@@ -85,6 +85,8 @@ public class MessageEvent implements Serializable
         return id;
     }
 
+    public final boolean isVolatile() { return volatileEvent; }
+
     /**
      * Converts the MessageEvent to a String in the format to be transmitted to the listener clients. E.g.:
      * <pre>
@@ -108,6 +110,7 @@ public class MessageEvent implements Serializable
         private String event = null;
         private Integer retry = null;
         private String id = null;
+        private boolean volatileEvent = false;
 
         /**
          * Sets the information of the 'data' field: string data to be transmitted with the event
@@ -151,6 +154,16 @@ public class MessageEvent implements Serializable
             return this;
         }
 
+        public Builder setVolatile() {
+            volatileEvent = true;
+            return this;
+        }
+
+        public Builder clearVolatile() {
+            volatileEvent = false;
+            return this;
+        }
+
         /**
          * Instantiates a {@link MessageEvent} object with the same attributes as the Builder object.
          * @return the {@link MessageEvent} instance
@@ -174,7 +187,7 @@ public class MessageEvent implements Serializable
 
             // an empty line dispatches the event
             sb.append('\n');
-            return new MessageEvent(event,data,retry,id,sb.toString());
+            return new MessageEvent(event,data,retry,id,sb.toString(), volatileEvent);
         }
     }
 }
