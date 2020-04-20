@@ -74,7 +74,11 @@ public class ServletEventTarget implements EventTarget
         response.setContentType("text/event-stream");
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Cache-Control","no-cache");
-        response.setHeader("Connection","keep-alive");
+        // do not send the Connection header in HTTP/2
+            if (!asyncContext.getRequest().getProtocol().equals("HTTP/2.0"))
+        {
+            response.setHeader("Connection", "keep-alive");
+        }
         return this;
     }
 
