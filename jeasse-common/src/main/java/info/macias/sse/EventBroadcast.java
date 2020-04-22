@@ -121,8 +121,8 @@ public class EventBroadcast extends Broadcast
 			}
 		}
 		// wait for history to have been sent AND subclasses to have sent context before adding event target to known targets
-		subscriberJoined(eventTarget);
 		targets.add(eventTarget);
+		subscriberJoined(eventTarget);
 	}
 
     /**
